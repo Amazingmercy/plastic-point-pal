@@ -1,56 +1,60 @@
-
-import React from 'react';
-import { Button } from '../components/ui/button';
-import { Card, CardContent } from '../components/ui/card';
-import { useNavigate } from 'react-router-dom';
+import React from "react";
+import { Button } from "../components/ui/button";
+import { Card, CardContent } from "../components/ui/card";
+import { useNavigate } from "react-router-dom";
+import { useAuth } from "../contexts/AuthContext";
 
 const Homepage = () => {
   const navigate = useNavigate();
+  const { user } = useAuth();
 
   const features = [
     {
-      icon: '♻️',
-      title: 'Scan & Earn',
-      description: 'Return plastic items and earn points instantly through QR code scanning'
+      icon: "♻️",
+      title: "Scan & Earn",
+      description:
+        "Return plastic items and earn points instantly through QR code scanning",
     },
     {
-      icon: '🎁',
-      title: 'Redeem Rewards',
-      description: 'Exchange your points for cash via bank transfer or Solana wallet'
+      icon: "🎁",
+      title: "Redeem Rewards",
+      description:
+        "Exchange your points for cash via bank transfer or Solana wallet",
     },
     {
-      icon: '🌍',
-      title: 'Save the Planet',
-      description: 'Contribute to environmental sustainability while earning rewards'
-    }
+      icon: "🌍",
+      title: "Save the Planet",
+      description:
+        "Contribute to environmental sustainability while earning rewards",
+    },
   ];
 
   const steps = [
     {
-      step: '1',
-      title: 'Register',
-      description: 'Create your free Ecopoint account'
+      step: "1",
+      title: "Register",
+      description: "Create your free Ecopoint account",
     },
     {
-      step: '2',
-      title: 'Collect Plastics',
-      description: 'Gather plastic items with QR codes'
+      step: "2",
+      title: "Collect Plastics",
+      description: "Gather plastic items with QR codes",
     },
     {
-      step: '3',
-      title: 'Visit Collector',
-      description: 'Find a certified collector to scan your items'
+      step: "3",
+      title: "Visit Collector",
+      description: "Find a certified collector to scan your items",
     },
     {
-      step: '4',
-      title: 'Earn Points',
-      description: 'Points are automatically added to your account'
+      step: "4",
+      title: "Earn Points",
+      description: "Points are automatically added to your account",
     },
     {
-      step: '5',
-      title: 'Redeem Rewards',
-      description: 'Exchange points for real money'
-    }
+      step: "5",
+      title: "Redeem Rewards",
+      description: "Exchange points for real money",
+    },
   ];
 
   return (
@@ -62,25 +66,28 @@ const Homepage = () => {
             Turn Plastic Waste into Rewards
           </h1>
           <p className="text-xl md:text-2xl mb-8 opacity-90">
-            Join the sustainable revolution. Earn points for recycling plastic and redeem real rewards.
+            Join the sustainable revolution. Earn points for recycling plastic
+            and redeem real rewards.
           </p>
-          <div className="space-x-4">
-            <Button 
-              size="lg" 
-              className="bg-white text-green-600 hover:bg-gray-100"
-              onClick={() => navigate('/register')}
-            >
-              Get Started
-            </Button>
-            <Button 
-              size="lg" 
-              variant="outline" 
-              className="border-white text-white hover:bg-white hover:text-green-600"
-              onClick={() => navigate('/login')}
-            >
-              Sign In
-            </Button>
-          </div>
+          {!user && (
+            <div className="space-x-4">
+              <Button
+                size="lg"
+                className="bg-white text-green-600 hover:bg-gray-100"
+                onClick={() => navigate("/register")}
+              >
+                Get Started
+              </Button>
+              <Button
+                size="lg"
+                variant="outline"
+                className="border-white text-green-600 hover:bg-white hover:text-green-400"
+                onClick={() => navigate("/login")}
+              >
+                Sign In
+              </Button>
+            </div>
+          )}
         </div>
       </section>
 
@@ -95,13 +102,18 @@ const Homepage = () => {
               Simple, rewarding, and environmentally friendly
             </p>
           </div>
-          
+
           <div className="grid md:grid-cols-3 gap-8">
             {features.map((feature, index) => (
-              <Card key={index} className="eco-card border-0 shadow-lg hover:shadow-xl transition-shadow">
+              <Card
+                key={index}
+                className="eco-card border-0 shadow-lg hover:shadow-xl transition-shadow"
+              >
                 <CardContent className="p-8 text-center">
                   <div className="text-4xl mb-4">{feature.icon}</div>
-                  <h3 className="text-xl font-semibold mb-3">{feature.title}</h3>
+                  <h3 className="text-xl font-semibold mb-3">
+                    {feature.title}
+                  </h3>
                   <p className="text-gray-600">{feature.description}</p>
                 </CardContent>
               </Card>
@@ -121,7 +133,7 @@ const Homepage = () => {
               Simple steps to start earning rewards for recycling
             </p>
           </div>
-          
+
           <div className="grid md:grid-cols-5 gap-8">
             {steps.map((step, index) => (
               <div key={index} className="text-center">
@@ -143,15 +155,18 @@ const Homepage = () => {
             Ready to Make a Difference?
           </h2>
           <p className="text-xl mb-8 opacity-90">
-            Join thousands of users who are already earning rewards while protecting our planet.
+            Join thousands of users who are already earning rewards while
+            protecting our planet.
           </p>
-          <Button 
-            size="lg" 
-            className="eco-gradient text-white"
-            onClick={() => navigate('/register')}
-          >
-            Start Earning Today
-          </Button>
+          {!user && (
+            <Button
+              size="lg"
+              className="eco-gradient text-white"
+              onClick={() => navigate("/register")}
+            >
+              Start Earning Today
+            </Button>
+          )}
         </div>
       </section>
     </div>

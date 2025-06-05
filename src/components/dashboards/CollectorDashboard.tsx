@@ -1,47 +1,65 @@
+import React, { useState, useEffect } from "react";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "../ui/card";
+import { Button } from "../ui/button";
+import { Input } from "../ui/input";
+import { Label } from "../ui/label";
 
-import React, { useState } from 'react';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../ui/card';
-import { Button } from '../ui/button';
-import { Input } from '../ui/input';
-import { Label } from '../ui/label';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../ui/select';
-import { useToast } from '../../hooks/use-toast';
+import { useToast } from "../../hooks/use-toast";
 
 const CollectorDashboard = () => {
+  const [weight, setWeight] = useState(0); // start with 0 kg
+
   const [scanData, setScanData] = useState({
-    qrCode: '',
-    userEmail: ''
+    qrCode: "",
+    userEmail: "",
   });
+
+  useEffect(() => {
+  const interval = setInterval(() => {
+    const randomWeight = +(Math.random() * 2).toFixed(2); // 0.00 - 2.00 kg
+    setWeight(randomWeight);
+  }, 3000); // update every 3 seconds
+
+  return () => clearInterval(interval);
+}, []);
+
 
   const [recentScans, setRecentScans] = useState([
     {
-      id: '1',
-      plasticType: 'PET Bottle',
-      user: 'user1@ecopoint.com',
+      id: "1",
+      plasticType: "PET Bottle",
+      user: "user1@ecopoint.com",
       points: 10,
-      timestamp: new Date().toLocaleString()
+      timestamp: new Date().toLocaleString(),
     },
     {
-      id: '2',
-      plasticType: 'HDPE Container',
-      user: 'user@ecopoint.com',
+      id: "2",
+      plasticType: "HDPE Container",
+      user: "user@ecopoint.com",
       points: 15,
-      timestamp: new Date(Date.now() - 300000).toLocaleString()
-    }
+      timestamp: new Date(Date.now() - 300000).toLocaleString(),
+    },
   ]);
 
   const { toast } = useToast();
 
   const mockPlasticTypes = {
-    'QR_PET_001': { name: 'PET Bottle', points: 10 },
-    'QR_HDPE_002': { name: 'HDPE Container', points: 15 }
+    QR_PET_001: { name: "PET Bottle", points: 10 },
+    QR_HDPE_002: { name: "HDPE Container", points: 15 },
   };
 
   const handleScan = (e: React.FormEvent) => {
     e.preventDefault();
-    
-    const plasticInfo = mockPlasticTypes[scanData.qrCode as keyof typeof mockPlasticTypes];
-    
+
+    const plasticInfo =
+      mockPlasticTypes[scanData.qrCode as keyof typeof mockPlasticTypes];
+
     if (!plasticInfo) {
       toast({
         title: "Invalid QR Code",
@@ -65,12 +83,12 @@ const CollectorDashboard = () => {
       plasticType: plasticInfo.name,
       user: scanData.userEmail,
       points: plasticInfo.points,
-      timestamp: new Date().toLocaleString()
+      timestamp: new Date().toLocaleString(),
     };
 
     setRecentScans([newScan, ...recentScans]);
-    setScanData({ qrCode: '', userEmail: '' });
-    
+    setScanData({ qrCode: "", userEmail: "" });
+
     toast({
       title: "Scan successful!",
       description: `${plasticInfo.points} points added to ${scanData.userEmail}`,
@@ -80,35 +98,42 @@ const CollectorDashboard = () => {
   return (
     <div className="max-w-7xl mx-auto p-6">
       <div className="mb-8">
-        <h1 className="text-3xl font-bold text-gray-900">Collector Dashboard</h1>
-        <p className="text-gray-600">Scan plastic items and assign points to users</p>
+        <h1 className="text-3xl font-bold text-gray-900">
+          Collector Dashboard
+        </h1>
+        <p className="text-gray-600">
+          Weigh plastic items and assign points to users
+        </p>
       </div>
 
       <div className="grid lg:grid-cols-2 gap-8">
         {/* QR Scanner */}
         <Card>
           <CardHeader>
-            <CardTitle>Scan Plastic Item</CardTitle>
+            <CardTitle>Weigh Plastic Item</CardTitle>
             <CardDescription>
-              Scan QR code and assign points to user
+              Weigh plastic items and assign points to user
             </CardDescription>
           </CardHeader>
           <CardContent>
             <form onSubmit={handleScan} className="space-y-4">
               <div>
-                <Label htmlFor="qrCode">QR Code</Label>
-                <Select 
-                  value={scanData.qrCode}
-                  onValueChange={(value) => setScanData({...scanData, qrCode: value})}
-                >
-                  <SelectTrigger>
-                    <SelectValue placeholder="Select or scan QR code" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="QR_PET_001">QR_PET_001 (PET Bottle - 10 pts)</SelectItem>
-                    <SelectItem value="QR_HDPE_002">QR_HDPE_002 (HDPE Container - 15 pts)</SelectItem>
-                  </SelectContent>
-                </Select>
+                <Label htmlFor="qrCode">Weight</Label>
+                <Card className="mb-8">
+                  <CardHeader>
+                    <CardTitle>Plastic Weight</CardTitle>
+                    <CardDescription>
+                      Live reading from smart scale (kg)
+                    </CardDescription>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="text-center">
+                      <div className="text-6xl font-bold text-green-700">
+                        {weight.toFixed(2)} kg
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
               </div>
 
               <div>
@@ -117,31 +142,40 @@ const CollectorDashboard = () => {
                   id="userEmail"
                   type="email"
                   value={scanData.userEmail}
-                  onChange={(e) => setScanData({...scanData, userEmail: e.target.value})}
+                  onChange={(e) =>
+                    setScanData({ ...scanData, userEmail: e.target.value })
+                  }
                   placeholder="Enter user email"
                   required
                 />
               </div>
 
               <Button type="submit" className="w-full eco-gradient text-white">
-                Process Scan
+                Process Weight
               </Button>
             </form>
 
             <div className="mt-6 p-4 bg-blue-50 rounded-lg">
               <h4 className="font-medium text-blue-800 mb-2">Quick Users:</h4>
               <div className="text-sm text-blue-700 space-y-1">
-                <button 
+                <button
                   type="button"
                   className="block hover:underline"
-                  onClick={() => setScanData({...scanData, userEmail: 'user@ecopoint.com'})}
+                  onClick={() =>
+                    setScanData({ ...scanData, userEmail: "user@ecopoint.com" })
+                  }
                 >
                   user@ecopoint.com
                 </button>
-                <button 
+                <button
                   type="button"
                   className="block hover:underline"
-                  onClick={() => setScanData({...scanData, userEmail: 'user1@ecopoint.com'})}
+                  onClick={() =>
+                    setScanData({
+                      ...scanData,
+                      userEmail: "user1@ecopoint.com",
+                    })
+                  }
                 >
                   user1@ecopoint.com
                 </button>
@@ -153,7 +187,7 @@ const CollectorDashboard = () => {
         {/* Recent Scans */}
         <Card>
           <CardHeader>
-            <CardTitle>Recent Scans</CardTitle>
+            <CardTitle>Recent Weighings</CardTitle>
             <CardDescription>
               Recently processed plastic returns
             </CardDescription>
@@ -168,7 +202,9 @@ const CollectorDashboard = () => {
                       +{scan.points} pts
                     </span>
                   </div>
-                  <p className="text-gray-600 text-sm mb-1">User: {scan.user}</p>
+                  <p className="text-gray-600 text-sm mb-1">
+                    User: {scan.user}
+                  </p>
                   <p className="text-gray-500 text-xs">{scan.timestamp}</p>
                 </div>
               ))}
@@ -184,10 +220,10 @@ const CollectorDashboard = () => {
             <div className="text-2xl font-bold text-green-600">
               {recentScans.length}
             </div>
-            <p className="text-gray-600">Scans Today</p>
+            <p className="text-gray-600"> Weighings Today</p>
           </CardContent>
         </Card>
-        
+
         <Card>
           <CardContent className="p-6 text-center">
             <div className="text-2xl font-bold text-blue-600">
@@ -196,11 +232,11 @@ const CollectorDashboard = () => {
             <p className="text-gray-600">Points Distributed</p>
           </CardContent>
         </Card>
-        
+
         <Card>
           <CardContent className="p-6 text-center">
             <div className="text-2xl font-bold text-purple-600">
-              {new Set(recentScans.map(scan => scan.user)).size}
+              {new Set(recentScans.map((scan) => scan.user)).size}
             </div>
             <p className="text-gray-600">Unique Users</p>
           </CardContent>

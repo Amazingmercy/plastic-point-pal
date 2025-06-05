@@ -22,7 +22,7 @@ const Navbar = () => {
             onClick={() => handleNavigation('/')}
           >
             <div className="flex-shrink-0 flex items-center">
-              <span className="text-2xl font-bold eco-gradient bg-clip-text text-transparent">
+              <span className="text-2xl font-bold  bg-clip-text text-black">
                 🌱 Ecopoint
               </span>
             </div>
