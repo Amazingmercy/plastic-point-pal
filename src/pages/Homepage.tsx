@@ -11,9 +11,9 @@ const Homepage = () => {
   const features = [
     {
       icon: "♻️",
-      title: "Scan & Earn",
+      title: "Weigh & Earn",
       description:
-        "Return plastic items and earn points instantly through QR code scanning",
+        "Return plastic items and earn points instantly through Weighing",
     },
     {
       icon: "🎁",
@@ -38,12 +38,12 @@ const Homepage = () => {
     {
       step: "2",
       title: "Collect Plastics",
-      description: "Gather plastic items with QR codes",
+      description: "Gather plastic items for recycling",
     },
     {
       step: "3",
       title: "Visit Collector",
-      description: "Find a certified collector to scan your items",
+      description: "Find a certified collector to weigh your items",
     },
     {
       step: "4",

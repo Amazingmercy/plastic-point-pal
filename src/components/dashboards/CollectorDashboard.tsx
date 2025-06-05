@@ -16,19 +16,17 @@ const CollectorDashboard = () => {
   const [weight, setWeight] = useState(0); // start with 0 kg
 
   const [scanData, setScanData] = useState({
-    qrCode: "",
     userEmail: "",
   });
 
   useEffect(() => {
-  const interval = setInterval(() => {
-    const randomWeight = +(Math.random() * 2).toFixed(2); // 0.00 - 2.00 kg
-    setWeight(randomWeight);
-  }, 3000); // update every 3 seconds
+    const interval = setInterval(() => {
+      const randomWeight = +(Math.random() * 2).toFixed(2); // 0.00 - 2.00 kg
+      setWeight(randomWeight);
+    }, 10000); // update every 10 seconds
 
-  return () => clearInterval(interval);
-}, []);
-
+    return () => clearInterval(interval);
+  }, []);
 
   const [recentScans, setRecentScans] = useState([
     {
@@ -54,44 +52,36 @@ const CollectorDashboard = () => {
     QR_HDPE_002: { name: "HDPE Container", points: 15 },
   };
 
-  const handleScan = (e: React.FormEvent) => {
+  const handleWeight = (e: React.FormEvent) => {
     e.preventDefault();
-
-    const plasticInfo =
-      mockPlasticTypes[scanData.qrCode as keyof typeof mockPlasticTypes];
-
-    if (!plasticInfo) {
-      toast({
-        title: "Invalid QR Code",
-        description: "This QR code is not recognized",
-        variant: "destructive",
-      });
-      return;
-    }
 
     if (!scanData.userEmail) {
       toast({
         title: "User Required",
-        description: "Please specify a user email",
+        description: "Please enter a user email",
         variant: "destructive",
       });
       return;
     }
 
-    const newScan = {
+    // Points system: 1 kg = 10 points
+    const pointsPerKg = 10;
+    const totalPoints = Math.round(weight * pointsPerKg);
+
+    const newEntry = {
       id: Date.now().toString(),
-      plasticType: plasticInfo.name,
+      plasticType: "Weighed Plastic", // or you can replace with actual material input later
       user: scanData.userEmail,
-      points: plasticInfo.points,
+      points: totalPoints,
       timestamp: new Date().toLocaleString(),
     };
 
-    setRecentScans([newScan, ...recentScans]);
-    setScanData({ qrCode: "", userEmail: "" });
+    setRecentScans([newEntry, ...recentScans]);
+    setScanData({ userEmail: "" });
 
     toast({
-      title: "Scan successful!",
-      description: `${plasticInfo.points} points added to ${scanData.userEmail}`,
+      title: "Weight submitted!",
+      description: `${totalPoints} points assigned to ${newEntry.user}`,
     });
   };
 
@@ -116,7 +106,7 @@ const CollectorDashboard = () => {
             </CardDescription>
           </CardHeader>
           <CardContent>
-            <form onSubmit={handleScan} className="space-y-4">
+            <form onSubmit={handleWeight} className="space-y-4">
               <div>
                 <Label htmlFor="qrCode">Weight</Label>
                 <Card className="mb-8">
